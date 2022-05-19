@@ -16,26 +16,32 @@ conf = config.load_kube_config()
 api_client = client.ApiClient(conf)
 k8s_client = client.NetworkingV1Api(api_client)
 
-try:
-    ingress = k8s_client.list_ingress_for_all_namespaces()
-    print(ingress.items)
-except Exception as ex:
-    print(ex)
+def retrive_eks_ingress(k8s_client):
+    try:
+        ingress = k8s_client.list_ingress_for_all_namespaces()
+        return(ingress.items)
+    except Exception as ex:
+        return []
 ```
 2.Find the insecure http ports listening on other than 443
 
 ```python
-for object in ingress.items:
-    print(object.spec.rules)
-    insecure_ports = []
-    for rule in object.spec.rules:
-        for path in rule.http.paths:
-            insecure_ports.append(path.backend.service.portnumber)
+
+def find_insecure_secvice_ports(k8s_client,ingress):
+    try:
+        for object in ingress.items:
+            # print(object.spec.rules)
+            insecure_ports = []
             for rule in object.spec.rules:
-        for path in rule.https.paths:
-            if path.backend.service.port.number != 443:
-                insecure_ports.append(path.backend.serviceport.number)
-    print(insecure_ports)
+                for path in rule.http.paths:
+                    insecure_ports.append(path.backend.service.portnumber)
+                    for rule in object.spec.rules:
+                for path in rule.https.paths:
+                    if path.backend.service.port.number != 443:
+                        insecure_ports.append(path.backend.serviceport.number)
+            return(insecure_ports)
+    except Exception as ex:
+        return []
 ```
 
 
