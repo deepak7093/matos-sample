@@ -24,7 +24,7 @@ except Exception as ex:
 ```
 2.Find the insecure http ports listening on other than 443
 
-```
+```python
 for object in ingress.items:
     print(object.spec.rules)
     insecure_ports = []
@@ -41,7 +41,7 @@ for object in ingress.items:
 
 3. Find the insecure http ports listening on other than 443
 Perform test remediation using patch operation via REST with dry run
-```
+```python
     try:
         api_response = k8s_client.patch_namespaced_ingress(name, namespace, body, pretty=pretty, dry_run=dry_run)
         pprint(api_response)
@@ -53,5 +53,5 @@ Perform test remediation using patch operation via REST with dry run
     - All services must listen on secure and ssl ports i.e 443
     - Non https ports allowed
     - OPA policies must not allow ports other than 443
-    
+
 5. Integration with MetosSphere
