@@ -1,4 +1,4 @@
-# Cloudseals: EKS remediation
+# Tech Birds: EKS remediation
 
 ## Use case: 
 EKS Insecure/http service ports
@@ -53,6 +53,23 @@ Perform test remediation using patch operation via REST with dry run
         pprint(api_response)
     except ApiException as e:
         print("Exception when calling NetworkingV1Api->patch_namespaced_ingress: %s\n" % e)
+```
+
+Call using ansible playbook
+```yaml
+---
+- name: Using a REST API
+ become: false
+ hosts: localhost
+ gather_facts: false
+ tasks:
+   - name: Getting the aws resource from api
+     uri:
+       url: http://127.0.0.1:5000/resources/aws
+       method: GET
+     register: results
+   - debug:
+       var: results
 ```
 
 4. Define remediation use case/best practices
